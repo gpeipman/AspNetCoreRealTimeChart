@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<div class="row">
+    <div class="col-lg-8 bigChart" data-bind="lineChart: lineChartData"></div>
+    <div class="col-lg-4">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Time</th>
+                    <th>Temperature</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: lineChartData">
+                <tr>
+                    <td data-bind="text: $index() + 1"></td>
+                    <td data-bind="text: Date.toLocaleTimeString()"></td>
+                    <td data-bind="text: LiquidTemp"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/data-view-model.js"></script>
+    <script src="~/js/line-chart-binding.js"></script>
+
+    <script>
+        var D3KD = this.D3KD || {};
+
+        (function () {
+            "use strict";
+            var dataViewModel = new D3KD.dataViewModel();
+
+            var protocol = location.protocol === "https:" ? "wss:" : "ws:";
+            var wsUri = protocol + "//" + window.location.host;
+            var socket = new WebSocket(wsUri);
+
+            socket.onmessage = function (e) {
+                var reading = JSON.parse(e.data);
+                reading.Date = new Date(reading.Date);
+
+                dataViewModel.addDataPoint(reading);
+            };
+
+            ko.applyBindings(dataViewModel);
+        }());
+    </script>
+}
