@@ -39,6 +39,11 @@ namespace AspNetCoreRealTimeChart.Extensions
             WebSocket socket;
             _sockets.TryRemove(id, out socket);
 
+            if(socket == null)
+            {
+                return;
+            }
+
             await socket.CloseAsync(closeStatus: WebSocketCloseStatus.NormalClosure,
                                     statusDescription: "Closed by the WebSocketManager",
                                     cancellationToken: CancellationToken.None);
