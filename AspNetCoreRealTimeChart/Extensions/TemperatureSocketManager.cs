@@ -29,7 +29,7 @@ namespace AspNetCoreRealTimeChart.Extensions
         public string AddSocket(WebSocket socket)
         {
             var id = CreateConnectionId();
-            _sockets.TryAdd(CreateConnectionId(), socket);
+            _sockets.TryAdd(id, socket);
 
             return id;
         }
